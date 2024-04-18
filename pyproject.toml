@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "eng2ipa"
+version = "0.1.0"
+description = ""
+authors = ["nag0yan <matsui-ka@kadokawa.jp>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.110.1"
+uvicorn = "^0.29.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+mypy = "^1.9.0"
+flake8 = "^7.0.0"
+black = "^24.4.0"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.taskipy.variables]
+app_name = "app"
+
+[tool.taskipy.tasks]
+flake8 = "poetry run flake8 ."
+mypy = "poetry run mypy ."
+black = "poetry run black ."
+isort = "poetry run isort ."
+test = "poetry run pytest test/test_*.py"
+run = "poetry run uvicorn src.main:app --host 0.0.0.0 --port 80"
+build = {cmd = "docker build . -t {app_name}", use_vars = true}
+crun = {cmd = "docker run --rm -p 80:80 {app_name}", use_vars = true}
+
+lint = "task flake8 && task mypy"
+format = "task black && task isort"
+format_check = "task black --check && task isort --check"
+
+precommit = "task lint && task format && task test"
+ci = "task lint && task format_check && task test"
+
+

@@ -1,0 +1,51 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12",
+      "installTools": true,
+      "toolsToInstall": [
+        "poetry",
+        "taskipy"
+      ]
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:1": {
+      "version": "latest",
+      "moby": true
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.flake8",
+        "matangover.mypy",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "github.vscode-github-actions"
+      ],
+      "settings": {
+        "mypy.runUsingActiveInterpreter": true
+      }
+    }
+  },
+  "remoteEnv": {
+    "VIRTUAL_ENV_DISABLE_PROMPT": "1"
+  },
+  "runArgs": [
+    "--init",
+    "--privileged"
+  ],
+  "mounts": [
+    "source=dind-var-lib-docker,target=/var/lib/docker,type=volume"
+  ],
+  "portsAttributes": {
+    "80": {
+      "label": "HTTP"
+    }
+  },
+  "appPort": 80,
+  "postCreateCommand": "poetry install"
+}
